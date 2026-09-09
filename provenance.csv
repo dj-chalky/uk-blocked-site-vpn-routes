@@ -164848,7 +164848,7 @@ hypnersports.cf,blocked-historical
 hypno-porn.net,blocked-historical
 hypnodragon.de,blocked-historical
 hypnofantasydownloads.com,blocked-historical
-hypnohub.net,blocked-osa;blocked-historical
+hypnohub.net,osatracker;blocked-osa;blocked-historical
 hypnopass.com,blocked-historical
 hypnopics-collective.net,blocked-historical
 hypnoporn.net,blocked-historical
@@ -228208,7 +228208,7 @@ pixgood.com,blocked-historical
 pixhost.com,blocked-historical
 pixhost.me,blocked-historical
 pixhost.org,blocked-historical
-pixhost.to,blocked-osa
+pixhost.to,osatracker;blocked-osa
 pixhub.eu,blocked-historical
 pixhub.net,blocked-historical
 pixhug.com,blocked-historical
