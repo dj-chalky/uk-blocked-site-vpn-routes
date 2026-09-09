@@ -1,0 +1,31 @@
+name: Update OSA VPN domains
+on:
+  workflow_dispatch:
+  schedule:
+    - cron: '23 5 * * *'
+permissions:
+  contents: write
+concurrency:
+  group: osa-list-update
+  cancel-in-progress: false
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - run: python -m unittest -v
+      - run: python update.py
+      - name: Publish changed data
+        run: |
+          if git diff --quiet -- domains.txt provenance.csv; then
+            echo "Domain membership unchanged."
+            exit 0
+          fi
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git add domains.txt osa-domains.txt court-domains.txt live-sources-domains.txt provenance.csv metadata.json
+          git commit -m "Update combined OSA domain list"
+          git push

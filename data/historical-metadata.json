@@ -1,0 +1,24 @@
+{
+  "source": "https://api.blocked.org.uk/data/export.csv.gz",
+  "source_last_modified": "2020-01-17T00:34:14Z",
+  "sha256": "ecaa15dd78ca917c3cf2499c25c54a2466ced2502b54458ff03b4b86ca66cb85",
+  "rows": 80090228,
+  "statuses": {
+    "timeout": 4372083,
+    "blocked": 1510711,
+    "ok": 67074436,
+    "error": 1271592,
+    "dnserror": 5795186,
+    "sslerror": 66220
+  },
+  "blocked_rows_by_type": {
+    "PARENTAL": 1143545,
+    "unspecified": 361460,
+    "COPYRIGHT": 5292,
+    "MALWARE": 414
+  },
+  "newest_blocked_result": "2020-01-17 00:30:13.066583+00",
+  "unique_targets": 339115,
+  "rejected_urls": 23,
+  "coverage": "Only rows whose Status is blocked, across all recorded block types and UK networks in the historical export. Not a current ISP block list or a complete database export."
+}

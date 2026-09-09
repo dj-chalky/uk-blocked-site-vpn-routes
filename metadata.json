@@ -1,0 +1,20 @@
+{
+  "checked_at_utc": "2026-09-09T15:21:27.670950+00:00",
+  "scope": "OSA Tracker including NSFW; Blocked.org.uk OSA and public court pages; blocked-status entries from the historical ORG export. Not a complete current ISP-block database.",
+  "domain_count": 339635,
+  "source_counts": {
+    "osatracker": 59,
+    "blocked-osa": 66,
+    "blocked-court": 1192,
+    "blocked-historical": 339115
+  },
+  "sources": {
+    "osatracker": "https://osatracker.co.uk/api/export?format=txt&nsfw=true",
+    "blocked-osa": "https://www.blocked.org.uk/osa-blocks",
+    "blocked-court": "https://www.blocked.org.uk/legal-blocks/sites/gb/1?sort=url",
+    "blocked-historical": "https://api.blocked.org.uk/data/export.csv.gz"
+  },
+  "normalization": "Lowercase IDNA; remove URL paths and leading www.; preserve other subdomains; deduplicate.",
+  "blocked_data_license": "CC BY 4.0 \u2014 Open Rights Group, https://www.blocked.org.uk/licence",
+  "historical_source_last_modified": "2020-01-17T00:34:14Z"
+}
