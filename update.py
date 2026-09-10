@@ -42,6 +42,15 @@ def domain(value):
     return host
 
 
+def glinet_compatible(value):
+    """Match GL.iNet v4.9.0's observed validator: IPs pass; digit-led domains fail."""
+    try:
+        ipaddress.ip_address(value)
+        return True
+    except ValueError:
+        return value[0].isalpha()
+
+
 class SiteHeadings(HTMLParser):
     def __init__(self):
         super().__init__()
@@ -129,6 +138,8 @@ def fetch_courts():
 
 def build(source_sets, allow_large_change=False):
     domains = sorted(set.union(*source_sets.values()))
+    glinet_domains = [value for value in domains if glinet_compatible(value)]
+    glinet_rejected = [value for value in domains if not glinet_compatible(value)]
     meta_path = ROOT / "metadata.json"
     if meta_path.exists() and not allow_large_change:
         old_counts = json.loads(meta_path.read_text(encoding="utf-8")).get("source_counts", {})
@@ -161,10 +172,18 @@ def build(source_sets, allow_large_change=False):
         "provenance.csv": provenance.getvalue(),
         "metadata.json": json.dumps(metadata, indent=2) + "\n",
         "osa-domains.txt": "\n".join(sorted(source_sets["osatracker"] | source_sets["blocked-osa"])) + "\n",
+        "glinet-full-part-1.txt": "\n".join(glinet_domains[:200_000]) + "\n",
+        "glinet-full-part-2.txt": "\n".join(glinet_domains[200_000:]) + "\n",
+        "glinet-rejected-numeric-domains.txt": "\n".join(glinet_rejected) + "\n",
     }
     if "blocked-court" in source_sets:
-        outputs["court-domains.txt"] = "\n".join(sorted(source_sets["blocked-court"])) + "\n"
-        outputs["live-sources-domains.txt"] = "\n".join(sorted(set.union(*(items for name, items in source_sets.items() if name != "blocked-historical")))) + "\n"
+        court_domains = sorted(source_sets["blocked-court"])
+        live_domains = sorted(set.union(*(items for name, items in source_sets.items() if name != "blocked-historical")))
+        osa_domains = sorted(source_sets["osatracker"] | source_sets["blocked-osa"])
+        outputs["court-domains.txt"] = "\n".join(court_domains) + "\n"
+        outputs["live-sources-domains.txt"] = "\n".join(live_domains) + "\n"
+        outputs["glinet-osa-domains.txt"] = "\n".join(filter(glinet_compatible, osa_domains)) + "\n"
+        outputs["glinet-live-sources-domains.txt"] = "\n".join(filter(glinet_compatible, live_domains)) + "\n"
     # Validate all sources before writing; each replacement is atomic.
     for name, content in outputs.items():
         with tempfile.NamedTemporaryFile(mode="w", encoding="utf-8", newline="\n", dir=ROOT, delete=False) as tmp:

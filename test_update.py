@@ -15,6 +15,12 @@ class SubscriptionTests(unittest.TestCase):
             with self.assertRaises(ValueError):
                 update.domain(bad)
 
+    def test_glinet_compatibility(self):
+        self.assertFalse(update.glinet_compatible('4chan.org'))
+        self.assertFalse(update.glinet_compatible('123movies.example'))
+        self.assertTrue(update.glinet_compatible('example4.com'))
+        self.assertTrue(update.glinet_compatible('192.0.2.1'))
+
     def test_heading_extraction_excludes_evidence_links(self):
         parser = update.SiteHeadings()
         parser.feed('<h3><a href="https://example.com/path">Name</a></h3><a href="https://evidence.org">Announcement</a>')

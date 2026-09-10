@@ -7,6 +7,8 @@ A combined plain-text domain list in GL.iNet's documented subscription format, f
 - Blocked.org.uk court-order reports: https://www.blocked.org.uk/legal-blocks/sites
 - Blocked.org.uk historical UK ISP results export: https://api.blocked.org.uk/data/export.csv.gz
 
+The latest comparison with alternative OSA sources is documented in [SOURCE_REVIEW.md](SOURCE_REVIEW.md).
+
 ## Coverage
 
 `domains.txt` combines every extracted target from the two OSA sources, all pages of the public UK court-block listing, and all valid targets with a `blocked` result in the downloadable historical export. All recorded historical block types are included. It is NOT the complete current Blocked.org.uk ISP-filter database. The site's headline blocked-site count is a statistic, not this feed's expected entry count.
@@ -26,6 +28,10 @@ Available subscriptions:
 | `osa-domains.txt` | Both OSA sources only |
 | `court-domains.txt` | Public UK court-block pages only |
 | `data/historical-blocked.txt` | Blocked targets in the January 2020 export only |
+| `glinet-osa-domains.txt` | OSA-only feed adjusted for GL.iNet v4.9.0 |
+| `glinet-live-sources-domains.txt` | OSA and court feeds adjusted for GL.iNet v4.9.0 |
+| `glinet-full-part-1.txt` / `glinet-full-part-2.txt` | Full historical coverage split at the observed 200,000-line limit |
+| `glinet-rejected-numeric-domains.txt` | Valid digit-led domains omitted from GL.iNet feeds |
 
 `provenance.csv` records each target's sources. `metadata.json` records source counts and the last published build time. `data/historical-metadata.json` records the historical export hash, row counts and result dates. Invalid historical hostnames are listed in `data/historical-rejected.csv` instead of being silently inserted into the router feed. IP addresses, if present, are preserved in canonical form.
 
@@ -41,9 +47,14 @@ The user's firmware is v4.9.0. This output format has been validated locally, bu
 
 The workflow checks daily. The router's documented subscription refresh is daily, so publication and router refresh can occur at different times. GitHub can disable scheduled workflows in inactive public repositories; check Actions if updates stop. Failed downloads, invalid domains, suspiciously small sources or a loss of more than 20% of existing entries stop the update and preserve the published list. Review the cause before using `python update.py --allow-large-change` manually.
 
-## Known router import issue
+## GL.iNet v4.9.0 compatibility
 
-The user's GL.iNet screenshot rejected line 1 of the original OSA Tracker feed (`4chan.org`) while recognising the other 58 entries. The downloaded source had no byte-order mark or malformed first line. The cause is unconfirmed. This list retains valid numeric-leading domains; it does not silently remove them. Test Detect on the actual router before relying on it. If rejection persists, its line number identifies the entry in this file.
+Testing on the user's GL.iNet v4.9.0 router established two undocumented validator behaviours:
+
+- Domain names whose first character is a digit are rejected, although such names are valid DNS names. IPv4 addresses beginning with a digit are accepted. In the first 200,000 lines of `domains.txt`, this exactly explains all 18,225 rejected entries: 18,270 targets began with a digit and 45 of those were accepted IPv4 addresses.
+- The detector examined exactly 200,000 of the 339,635 input lines.
+
+The `glinet-*` feeds remove digit-led domain names while retaining IP addresses. The full feed is split into two files of at most 200,000 lines. Using both full parts requires two destination rules aimed at the same VPN tunnel, if the router interface permits that configuration. The recommended single subscription is `glinet-live-sources-domains.txt`; it avoids historical data and remains far below the observed limit.
 
 ## Refresh locally
 
