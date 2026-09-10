@@ -16,7 +16,7 @@ The lists identify destinations to route; they do not operate a VPN, alter DNS s
 
 For most GL.iNet users, use:
 
-**[`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/glinet-live-sources-domains.txt)**
+**[`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt)**
 
 This combines the current OSA sources and public court-block pages. It excludes the large, dated ISP-results archive and is adjusted for the domain validation behaviour observed in GL.iNet firmware v4.9.0.
 
@@ -34,12 +34,12 @@ The project checks its live sources daily. GL.iNet also documents a daily refres
 
 | List | Intended use |
 | --- | --- |
-| [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/glinet-live-sources-domains.txt) | **Recommended.** Current OSA reports and public court-block pages, adjusted for GL.iNet |
-| [`glinet-osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/glinet-osa-domains.txt) | OSA-related reports only, adjusted for GL.iNet |
-| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/live-sources-domains.txt) | Current OSA and court sources without GL.iNet-specific filtering |
-| [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/osa-domains.txt) | OSA-related sources without GL.iNet-specific filtering |
-| [`court-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/court-domains.txt) | Public UK court-block pages only |
-| [`domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/domains.txt) | Full research dataset, including historical ISP results; too large for one observed GL.iNet import |
+| [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt) | **Recommended.** Current OSA reports and public court-block pages, adjusted for GL.iNet |
+| [`glinet-osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-osa-domains.txt) | OSA-related reports only, adjusted for GL.iNet |
+| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt) | Current OSA and court sources without GL.iNet-specific filtering |
+| [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/osa-domains.txt) | OSA-related sources without GL.iNet-specific filtering |
+| [`court-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/court-domains.txt) | Public UK court-block pages only |
+| [`domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/domains.txt) | Full research dataset, including historical ISP results; too large for one observed GL.iNet import |
 | `glinet-full-part-1.txt` and `glinet-full-part-2.txt` | Full historical dataset adjusted for GL.iNet and split into two router-sized files |
 
 Supporting files provide auditability:
