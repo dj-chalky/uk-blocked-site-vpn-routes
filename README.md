@@ -91,6 +91,10 @@ An update is rejected if a source cannot be downloaded, returns no usable entrie
 
 To refresh locally with Python 3.10 or later, run `python update.py`. No third-party packages are required. Rebuilding the historical extraction requires Python 3.11 or later and an explicitly downloaded export; the large archive is not stored in this repository or downloaded during daily updates.
 
+## Licensing
+
+The original updater software and documentation are available under the [MIT License](LICENSE), copyright 2026 dj-chalky. That licence does not apply to third-party source data in the generated files. See [DATA-LICENSING.md](DATA-LICENSING.md) for the source-specific terms, attribution and changes made.
+
 ## Data sources and attribution
 
 Blocked.org.uk data is published by Open Rights Group under [Creative Commons Attribution 4.0 International](https://www.blocked.org.uk/licence), unless otherwise specified. This project extracts hostnames, normalizes them and combines the source lists.
