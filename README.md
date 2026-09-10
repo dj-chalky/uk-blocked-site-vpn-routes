@@ -1,5 +1,7 @@
 # UK Blocked-Site VPN Routes
 
+[![Update status](https://github.com/dj-chalky/uk-blocked-site-vpn-routes/actions/workflows/update.yml/badge.svg)](https://github.com/dj-chalky/uk-blocked-site-vpn-routes/actions/workflows/update.yml)
+
 Subscription lists that send domains affected by UK internet restrictions through a VPN while leaving ordinary internet traffic on the normal connection.
 
 The lists are designed for GL.iNet's **VPN Policy → Specified Domain / IP List** feature. Add one subscription URL to the router and it will selectively use the chosen VPN tunnel when a listed domain is requested. This avoids routing every device and every website through the VPN.
@@ -99,3 +101,5 @@ GL.iNet documentation:
 
 - [Online domain and IP filtering-list format](https://docs.gl-inet.com/router/en/4/tutorials/how_to_configure_domain_and_ip_filtering_rules_for_glinet_routers_via_an_online_text_file/)
 - [VPN Dashboard and subscription refresh](https://docs.gl-inet.com/router/en/4/interface_guide/vpn_dashboard_v4.8/)
+
+Problems with the generated files or updater can be reported through [GitHub Issues](https://github.com/dj-chalky/uk-blocked-site-vpn-routes/issues). See [CONTRIBUTING.md](CONTRIBUTING.md) before proposing a manual change to a generated list.
