@@ -44,7 +44,7 @@ Domains are lowercased, deduplicated, and stripped of URL paths and a leading `w
 
 The feeds use the plain-text format documented by GL.iNet. Compatibility findings below were observed with firmware v4.9.0 and may differ on other versions or models.
 
-The workflow checks daily. The router's documented subscription refresh is daily, so publication and router refresh can occur at different times. GitHub can disable scheduled workflows in inactive public repositories; check Actions if updates stop. Failed downloads, invalid domains, suspiciously small sources or a loss of more than 20% of existing entries stop the update and preserve the published list. Review the cause before using `python update.py --allow-large-change` manually.
+The workflow checks daily. The router's documented subscription refresh is daily, so publication and router refresh can occur at different times. A monthly successful-update marker creates repository activity even when the domain lists do not change, preventing GitHub's 60-day inactivity rule from disabling the schedule. Failed downloads, invalid domains, suspiciously small sources or a loss of more than 20% of existing entries stop the update and preserve the published list. Review the cause before using `python update.py --allow-large-change` manually.
 
 ## GL.iNet v4.9.0 compatibility
 

@@ -18,14 +18,16 @@ jobs:
           python-version: '3.12'
       - run: python -m unittest -v
       - run: python update.py
+      - name: Maintain scheduled-workflow activity
+        run: date -u +%Y-%m > .github/last-successful-update-month.txt
       - name: Publish changed data
         run: |
-          if git diff --quiet -- domains.txt provenance.csv; then
-            echo "Domain membership unchanged."
+          if git diff --quiet -- domains.txt provenance.csv .github/last-successful-update-month.txt; then
+            echo "Domain membership and monthly activity marker unchanged."
             exit 0
           fi
           git config user.name "github-actions[bot]"
           git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
-          git add domains.txt osa-domains.txt court-domains.txt live-sources-domains.txt glinet-*.txt provenance.csv metadata.json
-          git commit -m "Update combined OSA domain list"
+          git add domains.txt osa-domains.txt court-domains.txt live-sources-domains.txt glinet-*.txt provenance.csv metadata.json .github/last-successful-update-month.txt
+          git commit -m "Refresh UK VPN routing domain data"
           git push
