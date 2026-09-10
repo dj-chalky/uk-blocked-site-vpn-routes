@@ -1,6 +1,6 @@
 # UK VPN routing domain subscription
 
-A combined plain-text domain list in GL.iNet's documented subscription format, from:
+A combined set of plain-text domain lists for policy-based VPN routing on GL.iNet routers. Data is aggregated from:
 
 - OSA Tracker: https://osatracker.co.uk/api/export?format=txt&nsfw=true (includes adult domains)
 - Open Rights Group / Blocked.org.uk: https://www.blocked.org.uk/osa-blocks
@@ -19,37 +19,36 @@ Entries on the OSA page include shutdowns, relaunches and some non-OSA geoblocki
 
 Domains are lowercased, deduplicated, and stripped of URL paths and a leading `www.`. Other subdomains are preserved. GL.iNet routes by domain, so a report about one forum or page can route other traffic to that same domain too. Related media/CDN domains are included only when present in the sources.
 
-Available subscriptions:
+## Subscription feeds
 
-| File | Coverage |
+| Feed | Coverage |
 | --- | --- |
-| `domains.txt` | Everything available in this build, including historical ISP results |
-| `live-sources-domains.txt` | OSA sources and public court pages, excluding the historical export |
-| `osa-domains.txt` | Both OSA sources only |
-| `court-domains.txt` | Public UK court-block pages only |
+| [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/glinet-live-sources-domains.txt) | Recommended GL.iNet feed: OSA sources and public court pages, excluding historical ISP results |
+| [`glinet-osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/glinet-osa-domains.txt) | GL.iNet-compatible OSA-only feed |
+| [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/osa-domains.txt) | Unmodified OSA feed, including valid digit-led domains rejected by the observed GL.iNet validator |
+| [`court-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/court-domains.txt) | Public UK court-block pages only |
+| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/live-sources-domains.txt) | Unmodified OSA and court feeds |
+| [`domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-vpn-routing-domains/main/domains.txt) | Everything available in this build, including historical ISP results; exceeds the observed GL.iNet limit |
+| `glinet-full-part-1.txt` / `glinet-full-part-2.txt` | Full historical coverage adjusted for GL.iNet and split at the observed 200,000-line limit |
 | `data/historical-blocked.txt` | Blocked targets in the January 2020 export only |
-| `glinet-osa-domains.txt` | OSA-only feed adjusted for GL.iNet v4.9.0 |
-| `glinet-live-sources-domains.txt` | OSA and court feeds adjusted for GL.iNet v4.9.0 |
-| `glinet-full-part-1.txt` / `glinet-full-part-2.txt` | Full historical coverage split at the observed 200,000-line limit |
 | `glinet-rejected-numeric-domains.txt` | Valid digit-led domains omitted from GL.iNet feeds |
 
 `provenance.csv` records each target's sources. `metadata.json` records source counts and the last published build time. `data/historical-metadata.json` records the historical export hash, row counts and result dates. Invalid historical hostnames are listed in `data/historical-rejected.csv` instead of being silently inserted into the router feed. IP addresses, if present, are preserved in canonical form.
 
-## Publish on GitHub
+## GL.iNet setup
 
-1. Create a public repository with `main` as its default branch.
-2. Put the contents of this folder at its root, including `.github/workflows/update.yml`.
-3. Enable Actions if prompted. Run **Update OSA VPN domains** once and confirm success.
-4. Open `domains.txt`, choose **Raw**, and copy the resulting HTTPS URL.
-5. In GL.iNet VPN routing, choose **Specified Domain / IP List → Subscription URL**, paste the Raw URL and Detect. Set **Use VPN** to your chosen tunnel and apply the rule.
+1. Copy the URL for the required feed from the table above. `glinet-live-sources-domains.txt` is the recommended default.
+2. In GL.iNet VPN routing, choose **Specified Domain / IP List → Subscription URL**.
+3. Paste the URL and select **Detect**.
+4. Set **Use VPN** to the required tunnel and apply the rule.
 
-The user's firmware is v4.9.0. This output format has been validated locally, but the full feed's size and import behaviour must be tested on the router; no claim is made that the device can accept an arbitrarily large list. The smaller subscriptions above are available at stable URLs if needed.
+The feeds use the plain-text format documented by GL.iNet. Compatibility findings below were observed with firmware v4.9.0 and may differ on other versions or models.
 
 The workflow checks daily. The router's documented subscription refresh is daily, so publication and router refresh can occur at different times. GitHub can disable scheduled workflows in inactive public repositories; check Actions if updates stop. Failed downloads, invalid domains, suspiciously small sources or a loss of more than 20% of existing entries stop the update and preserve the published list. Review the cause before using `python update.py --allow-large-change` manually.
 
 ## GL.iNet v4.9.0 compatibility
 
-Testing on the user's GL.iNet v4.9.0 router established two undocumented validator behaviours:
+Testing with GL.iNet firmware v4.9.0 identified two undocumented validator behaviours:
 
 - Domain names whose first character is a digit are rejected, although such names are valid DNS names. IPv4 addresses beginning with a digit are accepted. In the first 200,000 lines of `domains.txt`, this exactly explains all 18,225 rejected entries: 18,270 targets began with a digit and 45 of those were accepted IPv4 addresses.
 - The detector examined exactly 200,000 of the 339,635 input lines.
