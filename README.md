@@ -4,7 +4,7 @@
 
 Subscription lists that send domains affected by UK internet restrictions through a VPN while leaving ordinary internet traffic on the normal connection.
 
-The lists are designed for GL.iNet's **VPN Policy → Specified Domain / IP List** feature. Add one subscription URL to the router and it will selectively use the chosen VPN tunnel when a listed domain is requested. This avoids routing every device and every website through the VPN.
+The project supports multiple routers and policy-routing systems. Generic feeds contain one normalized domain or IP address per line for software that can import remote destination lists. Dedicated GL.iNet feeds apply the additional validation and size adjustments needed by tested GL.iNet firmware. In either case, the router selectively uses the chosen VPN tunnel when a listed destination is requested instead of routing every device and website through the VPN.
 
 The project brings together several kinds of UK restriction:
 
@@ -14,32 +14,37 @@ The project brings together several kinds of UK restriction:
 
 The lists identify destinations to route; they do not operate a VPN, alter DNS settings or guarantee that a service will work. A closed service cannot be restored by routing it through a VPN, and old entries may no longer be blocked.
 
-## Recommended subscription
+## Choose a subscription
 
-For most GL.iNet users, use:
+For most users, choose the current live-sources feed for your router:
 
-**[`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt)**
+| Router or tool | Recommended feed |
+| --- | --- |
+| GL.iNet | **[`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt)** |
+| Other routers and policy-routing tools | **[`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt)** |
 
-This combines the current OSA sources and public court-block pages. It excludes the large, dated ISP-results archive and is adjusted for the domain validation behaviour observed in GL.iNet firmware v4.9.0.
+Both feeds combine the current OSA sources and public court-block pages while excluding the large, dated ISP-results archive. The generic feed uses a portable one-entry-per-line format. The GL.iNet feed contains the same source set with adjustments for the domain validation behaviour observed in GL.iNet firmware v4.9.0.
 
-### Add it to a GL.iNet router
+Your router or routing package must be able to import a remote domain/IP list and use it as a VPN policy-routing destination. Configuration names and refresh schedules vary, so consult its documentation before adding a subscription.
+
+### GL.iNet quick start
 
 1. Open the router's VPN policy settings and select the VPN tunnel to use.
 2. Choose **Specified Domain / IP List**.
 3. Choose **Subscription URL**.
-4. Paste the recommended URL above and select **Detect**.
+4. Paste the GL.iNet URL above and select **Detect**.
 5. Apply the rule.
 
-The project checks its live sources daily. GL.iNet also documents a daily refresh for subscription URLs, so list changes reach the router automatically after both update cycles have run.
+The project checks its live sources daily. GL.iNet also documents a daily refresh for subscription URLs, so list changes reach the router automatically after both update cycles have run. Other routers may require a refresh interval to be configured separately.
 
 ## Available lists
 
 | List | Intended use |
 | --- | --- |
-| [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt) | **Recommended.** Current OSA reports and public court-block pages, adjusted for GL.iNet |
+| [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt) | **Recommended for GL.iNet.** Current OSA reports and public court-block pages, adjusted for GL.iNet |
 | [`glinet-osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-osa-domains.txt) | OSA-related reports only, adjusted for GL.iNet |
-| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt) | Current OSA and court sources without GL.iNet-specific filtering |
-| [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/osa-domains.txt) | OSA-related sources without GL.iNet-specific filtering |
+| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt) | **Recommended generic feed.** Current OSA and court sources for compatible routers and policy-routing tools |
+| [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/osa-domains.txt) | Generic OSA-related feed for compatible routers and policy-routing tools |
 | [`court-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/court-domains.txt) | Public UK court-block pages only |
 | [`domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/domains.txt) | Full research dataset, including historical ISP results; too large for one observed GL.iNet import |
 | `glinet-full-part-1.txt` and `glinet-full-part-2.txt` | Full historical dataset adjusted for GL.iNet and split into two router-sized files |
@@ -72,7 +77,11 @@ Targets are converted to lowercase domain names, URL paths and a leading `www.` 
 
 Domain routing works at hostname level. If a source reports a specific page, the resulting rule can route other requests to that hostname as well. Related media, login or CDN domains are included only when one of the sources lists them.
 
-### GL.iNet v4.9.0 compatibility
+### Router compatibility
+
+The generic files are intentionally simple: one domain or IP address per line, with no router-specific syntax. They can be used by routers and policy-routing packages that accept this format, but the project cannot guarantee compatibility with every product or firmware version.
+
+#### GL.iNet v4.9.0
 
 Testing with firmware v4.9.0 found that its list detector:
 
