@@ -4,7 +4,9 @@
 
 Subscription lists that send domains affected by UK internet restrictions through a VPN while leaving ordinary internet traffic on the normal connection.
 
-The project supports multiple routers and policy-routing systems. Generic feeds contain one normalized domain or IP address per line for software that can import remote destination lists. Dedicated GL.iNet feeds apply the additional validation and size adjustments needed by tested GL.iNet firmware. In either case, the router selectively uses the chosen VPN tunnel when a listed destination is requested instead of routing every device and website through the VPN.
+The project provides feeds for GL.iNet and pfSense. Generic feeds contain one normalized domain or IP address per line and can be used by pfSense URL Table aliases. Dedicated GL.iNet feeds apply the additional validation and size adjustments needed by tested GL.iNet firmware. In either case, the router selectively uses the chosen VPN tunnel when a listed destination is requested instead of routing every device and website through the VPN.
+
+Other router platforms are not automatically compatible merely because they support policy routing. See [Other router platforms](#other-router-platforms) for the current limitations.
 
 The project brings together several kinds of UK restriction:
 
@@ -21,11 +23,11 @@ For most users, choose the current live-sources feed for your router:
 | Router or tool | Recommended feed |
 | --- | --- |
 | GL.iNet | **[`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt)** |
-| Other routers and policy-routing tools | **[`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt)** |
+| pfSense | **[`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt)** |
 
 Both feeds combine the current OSA sources and public court-block pages while excluding the large, dated ISP-results archive. The generic feed uses a portable one-entry-per-line format. The GL.iNet feed contains the same source set with adjustments for the domain validation behaviour observed in GL.iNet firmware v4.9.0.
 
-Your router or routing package must be able to import a remote domain/IP list and use it as a VPN policy-routing destination. Configuration names and refresh schedules vary, so consult its documentation before adding a subscription.
+The GL.iNet path has been tested with firmware v4.9.0. The pfSense path below follows the current Netgate documentation for URL Table aliases, FQDN resolution and policy routing, but has not yet been tested by this project on pfSense hardware.
 
 ### GL.iNet quick start
 
@@ -35,7 +37,42 @@ Your router or routing package must be able to import a remote domain/IP list an
 4. Paste the GL.iNet URL above and select **Detect**.
 5. Apply the rule.
 
-The project checks its live sources daily. GL.iNet also documents a daily refresh for subscription URLs, so list changes reach the router automatically after both update cycles have run. Other routers may require a refresh interval to be configured separately.
+The project checks its live sources daily. GL.iNet also documents a daily refresh for subscription URLs, so list changes reach the router automatically after both update cycles have run.
+
+### pfSense
+
+These instructions use a URL Table alias as the destination of a LAN policy-routing rule. Use the recommended generic feed; do not use the much larger historical dataset.
+
+Before starting, configure the VPN client, assign its interface and confirm that pfSense has a working gateway for it.
+
+1. Open **Firewall → Aliases** and select the **URLs** tab.
+2. Add an alias named `UK_BLOCKED_SITES`.
+3. Set **Type** to **URL Table (IPs)**. Despite the label, pfSense permits FQDN entries in this alias type and resolves them to addresses.
+4. Enter the generic subscription URL:
+   `https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt`
+5. Set the refresh frequency to **1 day**, then save and apply the change.
+6. Open **Firewall → Rules → LAN** and add a **Pass** rule above the ordinary LAN-to-WAN rule.
+7. Set **Source** to **LAN net**, or to an alias containing only the client devices that should use this route.
+8. Set **Destination** to **Single host or alias**, then enter `UK_BLOCKED_SITES`.
+9. In the rule's advanced options, set **Gateway** to the VPN gateway.
+10. Save and apply the rule. Existing connections may keep their old route until their states expire or are cleared.
+11. Open the alias/table diagnostics and confirm that `UK_BLOCKED_SITES` contains resolved addresses. Test one listed destination and one ordinary destination from a covered client.
+
+The firewall itself must have working DNS so it can resolve FQDN alias entries. A domain may resolve to shared CDN addresses; policy routing operates on the resulting IP addresses and can therefore affect unrelated traffic using the same address. IPv6 traffic also needs an IPv6-capable VPN policy or an explicit leak-prevention rule.
+
+References: [pfSense alias types](https://docs.netgate.com/pfsense/en/latest/firewall/aliases-types.html), [hostname alias behaviour](https://docs.netgate.com/pfsense/en/latest/firewall/aliases-features.html), and [policy-routing configuration](https://docs.netgate.com/pfsense/en/latest/multiwan/policy-route.html).
+
+Devices behind either router—phones, computers, TVs and consoles—need no individual setup once the router rule applies to them.
+
+### Other router platforms
+
+| Platform | Current status |
+| --- | --- |
+| OpenWrt | The `pbr` package supports domain-based VPN policies, but this repository does not yet provide the additional script/configuration needed to download this entire feed into a PBR-managed set. The URL alone is not a complete setup. See the [OpenWrt PBR documentation](https://openwrt.org/docs/guide-user/network/routing/pbr_app). |
+| OPNsense | Not directly compatible with the generic feed: OPNsense URL Tables accept IP addresses, while this feed primarily contains domains. A custom resolver/updater or a future resolved-IP feed would be required. See [OPNsense aliases](https://docs.opnsense.org/manual/aliases.html). |
+| Asuswrt-Merlin | Not directly compatible with the generic feed: native policy rules match destination IP addresses or subnets rather than a remote domain subscription. See [Asuswrt-Merlin policy-based routing](https://github.com/RMerl/asuswrt-merlin/wiki/Policy-based-routing). |
+
+Platform-specific instructions will be added only after there is a complete, maintainable import and refresh path. Please open an issue if you have tested such a setup and can provide the router model, firmware/package version and exact configuration.
 
 ## Available lists
 
@@ -43,7 +80,7 @@ The project checks its live sources daily. GL.iNet also documents a daily refres
 | --- | --- |
 | [`glinet-live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-live-sources-domains.txt) | **Recommended for GL.iNet.** Current OSA reports and public court-block pages, adjusted for GL.iNet |
 | [`glinet-osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/glinet-osa-domains.txt) | OSA-related reports only, adjusted for GL.iNet |
-| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt) | **Recommended generic feed.** Current OSA and court sources for compatible routers and policy-routing tools |
+| [`live-sources-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/live-sources-domains.txt) | **Recommended for pfSense and integrations that accept FQDN subscription entries.** Current OSA and court sources |
 | [`osa-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/osa-domains.txt) | Generic OSA-related feed for compatible routers and policy-routing tools |
 | [`court-domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/court-domains.txt) | Public UK court-block pages only |
 | [`domains.txt`](https://raw.githubusercontent.com/dj-chalky/uk-blocked-site-vpn-routes/main/domains.txt) | Full research dataset, including historical ISP results; too large for one observed GL.iNet import |
@@ -79,7 +116,7 @@ Domain routing works at hostname level. If a source reports a specific page, the
 
 ### Router compatibility
 
-The generic files are intentionally simple: one domain or IP address per line, with no router-specific syntax. They can be used by routers and policy-routing packages that accept this format, but the project cannot guarantee compatibility with every product or firmware version.
+Compatibility depends on more than accepting a text file: the platform must accept FQDNs, resolve them into a destination set, refresh that resolution and use the set in a VPN policy-routing rule. A URL-table feature that accepts IP addresses only is not compatible with the generic feed.
 
 #### GL.iNet v4.9.0
 
