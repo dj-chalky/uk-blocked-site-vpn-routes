@@ -1,9 +1,9 @@
 {
-  "checked_at_utc": "2026-11-01T11:54:13.699781+00:00",
+  "checked_at_utc": "2026-11-16T13:45:23.584598+00:00",
   "scope": "OSA Tracker including NSFW; Blocked.org.uk OSA and public court pages; blocked-status entries from the historical ORG export. Not a complete current ISP-block database.",
   "domain_count": 339635,
   "source_counts": {
-    "osatracker": 62,
+    "osatracker": 63,
     "blocked-osa": 66,
     "blocked-court": 1192,
     "blocked-historical": 339115
